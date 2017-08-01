@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>spa-demo</title>
+</head>
+<body>
+<div>
+	<h3>网页头部</h3>
+</div>
+	<nav>
+		<ul>
+			<li><a href="#/">发现音乐</a></li>
+			<li><a href="#/my">我的音乐</a></li>
+			<li><a href="#/friend">朋友</a></li>
+		</ul>
+	</nav>
+	<!-- 这里用于不同的页面被渲染加载的地方 -->
+	<div id="container"></div>
+	<footer>
+		<p>网页底部</p>
+	</footer>
+	<script>
+        var oContainer = document.getElementById('container')
+		window.addEventListener('hashchange',function () {
+//			console.log(window.location.hash)
+			var url = window.location.hash.substr(1)
+			switch(url){
+				case '/':
+				    ajax('/views/home.html',function (data) {
+                        oContainer.innerHTML=data
+                        //这里要么把加事件的代码写在这里，如果要写在外部，则需要通过事件代理的形式处理
+                        document.getElementById("btn").addEventListener('click',function () {
+                            window.alert('hello world')
+                        })
+                    })
+                    break
+                case '/my':
+                    ajax('/views/my.html',function (data) {
+                        oContainer.innerHTML=data
+                    })
+                    break
+                case '/friend':
+                    ajax('/views/friend.html',function (data) {
+                        oContainer.innerHTML=data
+                    })
+                    break
+                default:
+                    ajax('/views/404.html',function (data) {
+                        oContainer.innerHTML=data
+                    })
+                    break
+			}
+		})
+        function ajax(url, callback) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('get',url)
+            xhr.send()
+            xhr.onreadystatechange=function () {
+                if(xhr.readyState===4&& xhr.status===200){
+                    callback(xhr.responseText)
+                }
+            }
+        }
+
+	</script>
+</body>
+</html>
